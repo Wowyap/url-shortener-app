@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>URL Shortener</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Shorten Your URL</h1>
+    <input type="text" id="longUrl" placeholder="Enter long URL" size="50">
+    <button onclick="shortenUrl()">Shorten</button>
+    <p id="shortUrlResult"></p>
+
+    <script>
+        async function shortenUrl() {
+            const longUrl = document.getElementById("longUrl").value;
+
+            const response = await fetch("https://km7vehlsi4gfvr6ejavlt376am0sathm.lambda-url.us-west-2.on.aws/shorten", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ url: longUrl })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const shortUrl = `https://km7vehlsi4gfvr6ejavlt376am0sathm.lambda-url.us-west-2.on.aws/${data.id}`;
+                document.getElementById("shortUrlResult").innerHTML =
+                    `<a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
+            } else {
+                document.getElementById("shortUrlResult").innerText = "Error shortening URL.";
+            }
+        }
+    </script>
+</body>
+</html>
